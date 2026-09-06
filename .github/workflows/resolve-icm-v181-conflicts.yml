@@ -23,6 +23,11 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
 
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Save ICM carve registry
         run: cp test/helpers/carve-guards.ts /tmp/icm-carve-guards.ts
 
@@ -74,8 +79,6 @@ jobs:
       - name: Commit resolved merge
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "merge: port Codex ICM context loading onto gstack v1.81"
           git push origin HEAD:icm-codex-context-wave-2
