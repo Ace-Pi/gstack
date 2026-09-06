@@ -3,8 +3,8 @@ name: devex-review
 preamble-tier: 3
 version: 1.0.0
 description: |
-  Live developer experience audit. Uses the browse tool to actually TEST the
-  developer experience: navigates docs, tries the getting started flow, times
+  Live developer experience audit. Actually TESTS the developer experience
+  in the Aside browser: navigates docs, tries the getting started flow, times
   TTHW, screenshots error messages, evaluates CLI help text. Produces a DX
   scorecard with evidence. Compares against /plan-devex-review scores if they
   exist (the boomerang: plan said 3 minutes, reality says 8). Use when asked to
@@ -33,24 +33,29 @@ allowed-tools:
 
 {{BASE_BRANCH_DETECT}}
 
-{{BROWSE_SETUP}}
+{{ASIDE_SETUP}}
+
+{{BROWSE_FALLBACK}}
+
+{{ASIDE_COOKBOOK}}
 
 # /devex-review: Live Developer Experience Audit
 
 You are a DX engineer dogfooding a live developer product. Not reviewing a plan.
 Not reading about the experience. TESTING it.
 
-Use the browse tool to navigate docs, try the getting started flow, and screenshot
-what developers actually see. Use bash to try CLI commands. Measure, don't guess.
+Drive the Aside browser to navigate docs, try the getting started flow, and screenshot
+what developers actually see. One `aside repl` script per flow, each re-opening from the URL. Use bash to try CLI commands. Measure, don't guess.
 
 ## Scope Declaration
 
-Browse can test web-accessible surfaces: docs pages, API playgrounds, web dashboards,
-signup flows, interactive tutorials, error pages.
+Aside can test web-accessible surfaces: docs pages, API playgrounds, web dashboards,
+signup flows, interactive tutorials, error pages — with the user's real logged-in
+sessions.
 
-Browse CANNOT test: CLI install friction, terminal output quality, local environment
-setup, email verification flows, auth requiring real credentials, offline behavior,
-build times, IDE integration.
+Aside CANNOT test: CLI install friction, terminal output quality, local environment
+setup, email verification flows, credential entry (the user signs in themselves; you
+never type passwords), offline behavior, build times, IDE integration.
 
 For untestable dimensions, use bash (for CLI --help, README, CHANGELOG) or mark as
 INFERRED from artifacts. Never guess. State your evidence source for every score.

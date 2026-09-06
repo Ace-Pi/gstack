@@ -2,7 +2,8 @@
 
 ## Step 1: Getting Started Audit
 
-Navigate to the docs/landing page via browse. Screenshot it.
+Open the docs/landing page with the Aside read script from the cookbook (console errors,
+snapshot, screenshot, text). Copy the screenshot out of the printed ASIDE_DIR and Read it.
 
 ```
 GETTING STARTED AUDIT
@@ -19,7 +20,7 @@ Score 0-10. Load "## Pass 1" from dx-hall-of-fame.md for calibration.
 
 Test what you can:
 - CLI: Run `--help` via bash. Evaluate output quality, flag design, discoverability.
-- API playground: Navigate via browse if one exists. Screenshot.
+- API playground: Open it in Aside if one exists. Screenshot.
 - Naming: Check consistency across the API surface.
 
 Score 0-10. Load "## Pass 2" from dx-hall-of-fame.md for calibration.
@@ -27,7 +28,8 @@ Score 0-10. Load "## Pass 2" from dx-hall-of-fame.md for calibration.
 ## Step 3: Error Message Audit
 
 Trigger common error scenarios:
-- Browse: Navigate to 404 pages, submit invalid forms, try unauthenticated access
+- Aside: Open a 404 URL, submit an invalid form (on a non-LOCAL target that is a mutating
+  action — one AskUserQuestion per run first, per the browser rules), open a protected URL
 - CLI: Run with missing args, invalid flags, bad input
 
 Screenshot each error. Score against the Elm/Rust/Stripe three-tier model.
@@ -36,7 +38,9 @@ Score 0-10. Load "## Pass 3" from dx-hall-of-fame.md for calibration.
 
 ## Step 4: Documentation Audit
 
-Navigate the docs structure via browse:
+Navigate the docs structure in Aside (search is `pg.fill(<search selector>, <query>)`,
+then `pg.locator(<search selector>).press("Enter")` — or `pg.getByRole("searchbox").press("Enter")`,
+or a click — then `snapshot`):
 - Check search functionality (try 3 common queries)
 - Verify code examples are copy-paste-complete
 - Check language switcher behavior
@@ -65,12 +69,15 @@ Score 0-10. Evidence: INFERRED from files. Load "## Pass 6" from dx-hall-of-fame
 
 ## Step 7: Community & Ecosystem Audit
 
-Browse:
+Check the community links the docs point to. Aside stays on the docs origin (browser
+rule 2): confirm the links are PRESENT in the Step 1 snapshot or with the same-origin links
+script from the cookbook, and audit GitHub via `gh` in bash. Do not open Discord, Stack
+Overflow, or any other third-party site — mark those INFERRED (link present, not followed):
 - Community links (GitHub Discussions, Discord, Stack Overflow)
 - GitHub issues (response time, templates, labels)
 - Contributing guide
 
-Score 0-10. Evidence: TESTED where web-accessible, INFERRED otherwise.
+Score 0-10. Evidence: TESTED for the docs page and GitHub, INFERRED otherwise.
 
 ## Step 8: DX Measurement Audit
 
