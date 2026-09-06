@@ -1,133 +1,27 @@
-name: ICM design-review carve
+name: ICM Design Review Carve
 
 on:
   push:
-    branches:
-      - icm-codex-context-wave-2
+    branches: [icm-codex-context-wave-2]
 
 permissions:
   contents: write
 
 jobs:
-  carve-test-cleanup:
-    if: github.actor != 'github-actions[bot]'
+  apply:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: icm-codex-context-wave-2
           fetch-depth: 0
-
       - uses: oven-sh/setup-bun@v2
-
-      - name: Apply design-review carve
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p = Path('design-review/SKILL.md.tmpl')
-          s = p.read_text()
-          old = '''{{LEARNINGS_SEARCH}}
-
-{{UX_PRINCIPLES}}
-
-## Phases 1-6: Design Audit Baseline
-
-{{DESIGN_METHODOLOGY}}
-
-{{DESIGN_HARD_RULES}}
-'''
-          new = '''{{LEARNINGS_SEARCH}}
-
----
-
-{{SECTION_INDEX:design-review}}
-
----
-
-## Phases 1-6: Design Audit Baseline
-
-{{SECTION:baseline-methodology}}
-'''
-          if old not in s:
-              raise SystemExit('design-review template anchor not found')
-          p.write_text(s.replace(old, new, 1))
-
-          p = Path('test/helpers/carve-guards.ts')
-          s = p.read_text()
-          anchor = '''  // ── Token-reduction Phase 4 wave 3 (v1.69.x branch) ──────────────────────
-  qa: {
-'''
-          entry = '''  // ── Ace-Pi ICM Codex wave 2 ─────────────────────────────────────────────
-  'design-review': {
-    skill: 'design-review',
-    expectedSections: ['baseline-methodology.md'],
-    requiredReads: ['baseline-methodology.md'],
-    scenario:
-      'Walk /design-review in SIMULATION — do not launch a browser, run bash, edit source, or commit. Treat setup as complete: clean working tree, target http://localhost:3000, DESIGN.md present, Standard depth, designer unavailable. Read the pointed baseline section before the audit, then produce the Phase 1-6 audit plan and scoring criteria. Stop before Phase 7. Do NOT use AskUserQuestion.',
-    staticInvariants: {
-      mustStayInSkeleton: [
-        '## Setup',
-        'Check for clean working tree',
-        '## Phases 1-6: Design Audit Baseline',
-        '## Phase 7: Triage',
-        '## Phase 8: Fix Loop',
-        '## Phase 9: Final Design Audit',
-        '## Phase 10: Report',
-        '## Additional Rules (design-review specific)',
-        'One commit per fix',
-      ],
-      mustPrecedeStop: ['## Setup', 'Check for clean working tree'],
-      mustMoveToSection: [
-        "Don't make me think",
-        '## Health Score Rubric',
-        'Never refuse to use the browser',
-      ],
-      gateAfterStop: undefined,
-    },
-    behavioral: 'prompt',
-    maxSkeletonBytes: 76_000,
-    minUnionBytes: 85_000,
-    mustContain: ['design', 'fix', 'screenshot', 'AI slop', 'One commit per fix'],
-  },
-
-  // ── Token-reduction Phase 4 wave 3 (v1.69.x branch) ──────────────────────
-  qa: {
-'''
-          if anchor not in s:
-              raise SystemExit('carve registry anchor not found')
-          p.write_text(s.replace(anchor, entry, 1))
-          PY
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Run focused tests
-        run: |
-          bun test test/design-review-progressive-sections.test.ts
-          bun test test/parity-sectioned.test.ts
-          bun test test/carve-guard-completeness.test.ts || true
-
-      - name: Measure generated Codex skill
-        run: |
-          rm -rf /tmp/gstack-design-review-wave2
-          bun run scripts/gen-skill-docs.ts --host codex --out-dir /tmp/gstack-design-review-wave2 >/tmp/gen.log
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('/tmp/gstack-design-review-wave2/.agents/skills/gstack-design-review/SKILL.md')
-          sec = p.parent / 'sections' / 'baseline-methodology.md'
-          print(f'DESIGN_REVIEW_SKILL_BYTES={p.stat().st_size}')
-          print(f'DESIGN_REVIEW_EAGER_TOKENS_APPROX={round(p.stat().st_size/4)}')
-          print(f'DESIGN_REVIEW_SECTION_BYTES={sec.stat().st_size}')
-          PY
-
-      - name: Remove one-shot workflow
-        run: rm .github/workflows/icm-design-review-carve.yml
-
-      - name: Commit tested carve
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "feat(design-review): defer baseline methodology in Codex"
-          git push origin HEAD:icm-codex-context-wave-2
+      - run: bun install --frozen-lockfile
+      - run: bun scripts/apply-icm-design-review-carve.ts
+      - run: bun test test/design-review-progressive-sections.test.ts
+      - run: bun test test/parity-sectioned.test.ts
+      - run: bun run scripts/gen-skill-docs.ts --host codex --out-dir /tmp/gstack-wave2
+      - run: wc -c /tmp/gstack-wave2/.agents/skills/gstack-design-review/SKILL.md /tmp/gstack-wave2/.agents/skills/gstack-design-review/sections/baseline-methodology.md
+      - run: rm .github/workflows/icm-design-review-carve.yml scripts/apply-icm-design-review-carve.ts
+      - run: git add -A && git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'feat(design-review): defer baseline methodology in Codex' && git push origin HEAD:icm-codex-context-wave-2
