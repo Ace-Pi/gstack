@@ -89,7 +89,7 @@ const replacement = `  retro: {
         '## Instructions',
         'Midnight-aligned windows',
         'Argument validation',
-        'If the first argument is \\`global\\`',
+        'If the first argument is ',
         '## Mode dispatch',
         '## Tone',
         '## Important Rules',
