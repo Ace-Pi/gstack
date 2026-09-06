@@ -1,0 +1,32 @@
+name: ICM DevEx Review Check
+
+on:
+  push:
+    branches:
+      - icm-codex-context-wave-2
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: icm-codex-context-wave-2
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun test test/devex-review-progressive-sections.test.ts
+      - run: bun test test/design-review-progressive-sections.test.ts
+      - run: bun test test/parity-sectioned.test.ts
+      - run: bun run scripts/gen-skill-docs.ts --host codex --out-dir /tmp/gstack-wave2
+      - run: wc -c /tmp/gstack-wave2/.agents/skills/gstack-devex-review/SKILL.md /tmp/gstack-wave2/.agents/skills/gstack-devex-review/sections/audit-playbook.md
+      - run: rm .github/workflows/icm-devex-review-check.yml
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: record validated DevEx Review carve"
+          git push origin HEAD:icm-codex-context-wave-2
