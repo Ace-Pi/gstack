@@ -167,26 +167,39 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
   },
   'plan-ceo-review': {
     skill: 'plan-ceo-review',
-    expectedSections: ['review-sections.md'],
-    requiredReads: ['review-sections.md'],
+    expectedSections: ['scope-expansion.md', 'selective-expansion.md', 'hold-scope.md', 'scope-reduction.md', 'review-sections.md'],
+    requiredReads: ['hold-scope.md', 'review-sections.md'],
     scenario:
-      'Review the plan in PLAN.md. Hold the current scope (HOLD SCOPE mode) — do not challenge or expand scope. Run the full CEO review and produce the review report.',
+      'Review the plan in PLAN.md in HOLD SCOPE mode. Treat the implementation approach as already approved. Run the mode chooser, load only hold-scope, then run the full 11-section deep review and produce the review report. Do not load expansion or reduction posture sections.',
     staticInvariants: {
-      mustStayInSkeleton: ['## Step 0: Nuclear Scope Challenge'],
-      mustMoveToSection: ['### Section 1: Architecture Review', '## Mode Quick Reference'],
+      mustStayInSkeleton: [
+        '## Step 0: Nuclear Scope Challenge + Mode Selection',
+        '### 0A. Premise Challenge',
+        '### 0B. Existing Code Leverage',
+        '### 0C. Dream State Mapping',
+        '### 0C-bis. Implementation Alternatives (MANDATORY)',
+        '### 0F. Mode Selection',
+        'Critical rule: In ALL modes, the user is 100% in control',
+      ],
+      mustPrecedeStop: ['### 0A. Premise Challenge', '### 0C-bis. Implementation Alternatives (MANDATORY)', '### 0F. Mode Selection'],
+      mustMoveToSection: [
+        '### 0D-prelude. Expansion Framing',
+        '**For SCOPE EXPANSION**',
+        '**For SELECTIVE EXPANSION**',
+        '**For HOLD SCOPE**',
+        '**For SCOPE REDUCTION**',
+        '### 0D-POST. Persist CEO Plan',
+        '### 0E. Temporal Interrogation',
+        '### Section 1: Architecture Review',
+      ],
       gateAfterStop: 'EXIT PLAN MODE GATE',
     },
     behavioral: 'external',
     externalTest: 'test/skill-e2e-plan-ceo-review-section-loading.test.ts',
-    // v1.65 merge: provisional larger-of-both-waves budget; re-measured below.
-        // Fork port wave 2 (#703): the repo-doc-preference block in the design
-    // check grew every plan-review skeleton ~0.7KB. Measured values noted.
-    maxSkeletonBytes: 76_000, // + v1.78 AUQ objectivity + v1.79 foreground-dispatch sweep (merged); measured 75_586
-    minUnionBytes: 123_600, // token-reduction Phases 1-2 (v1.69.x branch): preamble bash -> bin/gstack-skill-start, onboarding -> gated emission; measured union 137,346
+    maxSkeletonBytes: 65_000,
+    minUnionBytes: 123_600,
     mustContain: ['SCOPE EXPANSION', 'SELECTIVE EXPANSION', 'HOLD SCOPE', 'SCOPE REDUCTION'],
-    // Default-on Codex outside-voice (codexPreflight block + CODEX_MODE branch
-    // prose replacing the smaller opt-in question) lands this ~5.2% over baseline.
-    maxSizeRatio: 1.08,
+    maxSizeRatio: 1.12,
   },
   'plan-eng-review': {
     skill: 'plan-eng-review',
