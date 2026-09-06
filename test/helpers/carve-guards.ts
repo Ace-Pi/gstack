@@ -576,6 +576,38 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
     maxSizeRatio: 1.07, // measured 1.051 vs the branch monolith: index + stubs + 4 STOP pointers
   },
   // ── Ace-Pi ICM Codex wave 2 ─────────────────────────────────────────────
+  'plan-tune': {
+    skill: 'plan-tune',
+    expectedSections: ['onboarding.md', 'profile-preferences.md', 'analytics.md', 'dream-cycle.md'],
+    requiredReads: ['profile-preferences.md'],
+    scenario:
+      'Run /plan-tune for the plain-English request "show my profile" in SIMULATION. Treat question tuning as enabled, the setup gate as already satisfied, no pending dream-cycle proposals, and a populated declared profile. Do not execute bash or mutate files. Route from Step 0, read only the profile-preferences section, then describe the profile presentation and calibration behavior. Do NOT use AskUserQuestion.',
+    staticInvariants: {
+      mustStayInSkeleton: [
+        '## Step 0: Detect what the user wants',
+        'Consent gate',
+        'Setup gate',
+        'Dream-cycle gate',
+        'question_tuning false',
+        'question_tuning true',
+        '## Important Rules',
+        'One-way doors override never-ask',
+      ],
+      mustPrecedeStop: ['## Step 0: Detect what the user wants'],
+      mustMoveToSection: [
+        '## Consent + opt-in',
+        '## 5-Q setup',
+        '## Inspect profile',
+        '## Stats',
+        '## Dream cycle review',
+      ],
+      gateAfterStop: undefined,
+    },
+    behavioral: 'prompt',
+    maxSkeletonBytes: 42_000,
+    minUnionBytes: 55_000,
+    mustContain: ['question tuning', 'developer profile', 'never-ask', 'Dream cycle', 'Plain English everywhere'],
+  },
   'design-review': {
     skill: 'design-review',
     expectedSections: ['baseline-methodology.md'],
