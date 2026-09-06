@@ -790,20 +790,37 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
   },
   retro: {
     skill: 'retro',
-    expectedSections: ['report-format.md'],
-    requiredReads: ['report-format.md'],
+    expectedSections: ['repo-retro.md', 'global-retro.md', 'compare-retro.md', 'report-format.md'],
+    requiredReads: ['repo-retro.md', 'report-format.md'],
     scenario:
-      'Run the repo-scoped weekly retrospective for the last 7 days on this repo. There is no origin remote — proceed with the local branch per the guard disclosure rules. The gstack-retro-metrics script is not installed, so follow the degraded path (compute the metrics manually with git). Skip any AskUserQuestion calls — this is non-interactive. Produce the full narrative retrospective report.',
+      'Run the repo-scoped weekly retrospective for the last 7 days on this repo. There is no origin remote — proceed with the local branch per the guard disclosure rules. The gstack-retro-metrics script is not installed, so follow the degraded path (compute the metrics manually with git). Skip any AskUserQuestion calls — this is non-interactive. Route to the repo-retro section, then read report-format only when Step 14 starts. Produce the full narrative retrospective report.',
     staticInvariants: {
-      mustStayInSkeleton: ['gstack-retro-metrics', '### Step 2: Compute Metrics', '### Step 13: Save Retro History'],
-      mustPrecedeStop: ['### Step 2: Compute Metrics'],
-      mustMoveToSection: ['## Engineering Retro: [date range]', '### Team Breakdown', 'Plan Completion This Period'],
+      mustStayInSkeleton: [
+        '## Instructions',
+        'Midnight-aligned windows',
+        'Argument validation',
+        'If the first argument is ',
+        '## Mode dispatch',
+        '## Tone',
+        '## Important Rules',
+      ],
+      mustPrecedeStop: ['## Instructions', 'Midnight-aligned windows', 'Argument validation', '## Mode dispatch'],
+      mustMoveToSection: [
+        '### Step 0.5: Freshness pre-flight (fetch)',
+        '### Step 2: Compute Metrics',
+        '### Step 13: Save Retro History',
+        '## Global Retrospective Mode',
+        '### Global Step 7: Aggregate and generate narrative',
+        '## Compare Mode',
+        '## Engineering Retro: [date range]',
+      ],
       gateAfterStop: undefined,
     },
     behavioral: 'prompt',
-    maxSkeletonBytes: 73_450, // + v1.78 AUQ spawned-trigger objectivity (explicit declaration + interactive fence); measured 73_059
-    minUnionBytes: 66_000, // measured union 73,496
-    mustContain: ['retrospective', '45-minute gap', 'Ship of the week', 'Praise'],
+    maxSkeletonBytes: 43_000,
+    minUnionBytes: 70_000,
+    mustContain: ['retrospective', '45-minute gap', 'Ship of the week', 'Praise', 'global', 'compare'],
+    maxSizeRatio: 1.10,
   },
 
   // ── Token-reduction Phase 4 wave 4 (v1.69.x branch): design doctrine carve ──
