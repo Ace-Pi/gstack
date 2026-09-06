@@ -675,6 +675,38 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
     mustContain: ['Diataxis', 'Reference', 'Explanation', 'How-to', 'Tutorial', 'Research before writing'],
     maxSizeRatio: 1.08,
   },
+  'pair-agent': {
+    skill: 'pair-agent',
+    expectedSections: ['remote-pairing.md', 'remote-reference.md'],
+    requiredReads: ['remote-pairing.md'],
+    scenario:
+      'Walk /pair-agent in SIMULATION for pairing Hermes on a different machine. Treat the browser daemon as running and the user as choosing to keep it, pair-agent consent as already on, and ngrok as installed and authenticated. Do not execute commands or expose real credentials. Read the remote pairing section, then state the command and instruction-block handling you would perform. Do not load the remote reference section unless needed.',
+    staticInvariants: {
+      mustStayInSkeleton: [
+        '## Step 1: Check prerequisites',
+        '## Step 2: Ask what they want',
+        '## Step 3: Local or remote?',
+        'Live-daemon consent (one-way door)',
+        '### If same machine (option A):',
+        '## Step 5: Verify connection',
+      ],
+      mustPrecedeStop: ['## Step 2: Ask what they want', '## Step 3: Local or remote?', 'Live-daemon consent (one-way door)'],
+      mustMoveToSection: [
+        'Consent gate (once per machine)',
+        'NGROK_INSTALLED',
+        'CRITICAL: You MUST output the full instruction block',
+        '## What the remote agent can do',
+        '## Troubleshooting',
+        '## Revoking access',
+      ],
+      gateAfterStop: undefined,
+    },
+    behavioral: 'prompt',
+    maxSkeletonBytes: 39_000,
+    minUnionBytes: 43_000,
+    mustContain: ['pair-agent', 'ngrok', '--restrict', '--control', 'tunnel revoke', 'setup key'],
+    maxSizeRatio: 1.08,
+  },
   'qa-only': {
     skill: 'qa-only',
     expectedSections: ['methodology.md'],
