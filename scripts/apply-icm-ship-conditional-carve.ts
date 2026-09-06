@@ -104,7 +104,7 @@ const replacement = `  ship: {
         'gh pr create --base',
         'gh pr edit --title',
         'Dispatch /document-release as a subagent',
-        'This PR adds a new binary/tool but there\'s no CI/CD pipeline',
+        "This PR adds a new binary/tool but there's no CI/CD pipeline",
         'Non-destructive squash strategy',
         'gstack can install a per-repo git pre-push hook',
         'gstack can learn from your AskUserQuestion answers',
