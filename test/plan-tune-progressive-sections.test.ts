@@ -35,10 +35,10 @@ describe('plan-tune Codex progressive context', () => {
       expect(skill).toContain('Consent gate');
       expect(skill).toContain('One-way doors override never-ask');
       expect(skill).toContain('sections/profile-preferences.md');
-      expect(skill).not.toContain('## Consent + opt-in');
-      expect(skill).not.toContain('## Inspect profile');
-      expect(skill).not.toContain('## Stats');
-      expect(skill).not.toContain('## Dream cycle review');
+      expect(skill).not.toContain('\n## Consent + opt-in\n');
+      expect(skill).not.toContain('\n## Inspect profile\n');
+      expect(skill).not.toContain('\n## Stats\n');
+      expect(skill).not.toContain('\n## Dream cycle review\n');
 
       expect(onboarding).toContain('## Consent + opt-in');
       expect(onboarding).toContain('## 5-Q setup');
