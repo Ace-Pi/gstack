@@ -641,6 +641,34 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
   },
 
   // ── Token-reduction Phase 4 wave 3 (v1.69.x branch) ──────────────────────
+  'qa-only': {
+    skill: 'qa-only',
+    expectedSections: ['methodology.md'],
+    requiredReads: ['methodology.md'],
+    scenario:
+      'Walk /qa-only in SIMULATION — do not launch a browser or execute bash. Treat the target as http://localhost:3000, mode as diff-aware on a feature branch, and no richer test plan as available. Read the pointed methodology section before the test pass, then produce the report-only QA plan and health-score rubric. Do not fix or suggest fixes. Do NOT use AskUserQuestion.',
+    staticInvariants: {
+      mustStayInSkeleton: [
+        '## Setup',
+        '## Test Plan Context',
+        '## QA Test Pass',
+        '## Output',
+        '## Additional Rules (qa-only specific)',
+        'Never fix bugs',
+      ],
+      mustPrecedeStop: ['## Setup', '## Test Plan Context'],
+      mustMoveToSection: [
+        '## Health Score Rubric',
+        'Diff-aware',
+        'Never refuse to use the browser',
+      ],
+      gateAfterStop: undefined,
+    },
+    behavioral: 'prompt',
+    maxSkeletonBytes: 46_000,
+    minUnionBytes: 60_000,
+    mustContain: ['report', 'health score', 'screenshots', 'NEVER fix anything', 'Never fix bugs'],
+  },
   qa: {
     skill: 'qa',
     expectedSections: ['test-bootstrap.md', 'qa-patterns.md'],
