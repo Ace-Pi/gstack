@@ -36,3 +36,5 @@ jobs:
           git add -A
           git commit -m "feat(retro): route modes through progressive Codex sections"
           git push origin HEAD:icm-codex-context-wave-2
+
+# Trigger validation after workflow registration.
