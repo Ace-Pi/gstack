@@ -575,6 +575,39 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
     mustContain: ['PGLite', 'Supabase', 'claude mcp add', 'read_secret_to_env', 'pooler'],
     maxSizeRatio: 1.07, // measured 1.051 vs the branch monolith: index + stubs + 4 STOP pointers
   },
+  // ── Ace-Pi ICM Codex wave 2 ─────────────────────────────────────────────
+  'design-review': {
+    skill: 'design-review',
+    expectedSections: ['baseline-methodology.md'],
+    requiredReads: ['baseline-methodology.md'],
+    scenario:
+      'Walk /design-review in SIMULATION — do not launch a browser, run bash, edit source, or commit. Treat setup as complete: clean working tree, target http://localhost:3000, DESIGN.md present, Standard depth, designer unavailable. Read the pointed baseline section before the audit, then produce the Phase 1-6 audit plan and scoring criteria. Stop before Phase 7. Do NOT use AskUserQuestion.',
+    staticInvariants: {
+      mustStayInSkeleton: [
+        '## Setup',
+        'Check for clean working tree',
+        '## Phases 1-6: Design Audit Baseline',
+        '## Phase 7: Triage',
+        '## Phase 8: Fix Loop',
+        '## Phase 9: Final Design Audit',
+        '## Phase 10: Report',
+        '## Additional Rules (design-review specific)',
+        'One commit per fix',
+      ],
+      mustPrecedeStop: ['## Setup', 'Check for clean working tree'],
+      mustMoveToSection: [
+        "Don't make me think",
+        '## Health Score Rubric',
+        'Never refuse to use the browser',
+      ],
+      gateAfterStop: undefined,
+    },
+    behavioral: 'prompt',
+    maxSkeletonBytes: 76_000,
+    minUnionBytes: 85_000,
+    mustContain: ['design', 'fix', 'screenshot', 'AI slop', 'One commit per fix'],
+  },
+
   // ── Token-reduction Phase 4 wave 3 (v1.69.x branch) ──────────────────────
   qa: {
     skill: 'qa',
