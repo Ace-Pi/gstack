@@ -641,6 +641,40 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
   },
 
   // ── Token-reduction Phase 4 wave 3 (v1.69.x branch) ──────────────────────
+  'document-generate': {
+    skill: 'document-generate',
+    expectedSections: ['reference-docs.md', 'explanation-docs.md', 'how-to-docs.md', 'tutorial-docs.md'],
+    requiredReads: ['reference-docs.md', 'explanation-docs.md'],
+    scenario:
+      'Walk /document-generate in SIMULATION for an internal scheduler module. Treat scope as already confirmed and research as complete: the module has a public TypeScript API plus two non-obvious design decisions, but no end-user workflow. Partition it into Reference + Explanation only. Do not write files, commit, push, browse, or use AskUserQuestion. Read only the selected writing playbooks, then produce the documentation plan and a concise outline of the two documents.',
+    staticInvariants: {
+      mustStayInSkeleton: [
+        '## Step 0: Scope & Intent',
+        '## Step 1: Codebase Archaeology (Research Phase)',
+        '## Step 2: Diataxis Partitioning',
+        '## Step 7: Cross-Document Linking & Discoverability',
+        '## Step 8: Quality Self-Review',
+        '## Step 9: Commit & Output',
+        'Redaction scan before commit',
+        '## Important Rules',
+      ],
+      mustPrecedeStop: ['## Step 0: Scope & Intent', '## Step 1: Codebase Archaeology (Research Phase)', '## Step 2: Diataxis Partitioning'],
+      mustMoveToSection: [
+        '## Step 3: Write Reference Documentation First',
+        '## Step 4: Write Explanation Documentation',
+        '## Step 5: Write How-To Guides',
+        '## Step 6: Write Tutorials',
+        'Reference doc template:',
+        'Tutorial doc template:',
+      ],
+      gateAfterStop: undefined,
+    },
+    behavioral: 'prompt',
+    maxSkeletonBytes: 43_500,
+    minUnionBytes: 47_000,
+    mustContain: ['Diataxis', 'Reference', 'Explanation', 'How-to', 'Tutorial', 'Research before writing'],
+    maxSizeRatio: 1.08,
+  },
   'qa-only': {
     skill: 'qa-only',
     expectedSections: ['methodology.md'],
