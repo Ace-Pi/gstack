@@ -111,7 +111,7 @@ const replacement = `  retro: {
     minUnionBytes: 70_000,
     mustContain: ['retrospective', '45-minute gap', 'Ship of the week', 'Praise', 'global', 'compare'],
     maxSizeRatio: 1.10,
-  }`;
+  },`;
 
 guards = guards.slice(0, guardStart) + replacement + guards.slice(guardEnd + '\n  },'.length);
 fs.writeFileSync(guardsPath, guards);
