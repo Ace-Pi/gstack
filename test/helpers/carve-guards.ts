@@ -108,62 +108,43 @@ export const CARVE_GUARDS: Record<string, CarveGuard> = {
       'adversarial.md',
       'changelog.md',
       'pr-body.md',
+      'distribution-pipeline.md',
+      'wip-squash.md',
+      'prepush-credential-setup.md',
+      'plan-tune-nudge.md',
     ],
     requiredReads: ['review-army.md', 'changelog.md'],
     scenario:
-      'This is a FRESH version-changing ship: the branch has a real code change, VERSION still equals the base version (needs a bump), and CHANGELOG.md needs a new entry. Follow the skill flow for a version-changing ship: run the pre-landing review and prepare the CHANGELOG entry. Produce the ship plan / review report. Do NOT actually commit, push, or open a PR.',
+      'This is a FRESH version-changing ship with no standalone artifact, no WIP commits, an already-installed credential hook, and an existing plan-tune nudge marker. Run the normal ship verification path through pre-landing review and CHANGELOG preparation. Do not load the four conditional sections. Do NOT actually commit, push, or open a PR.',
     staticInvariants: {
-      // The PR-title-version invariant MUST stay always-loaded: the v1.54.0.0
-      // carve stranded it in pr-body.md and PRs started landing with bare titles
-      // (CI backstop: test/pr-title-sync-workflow-safety.test.ts).
-      // Same carve also stranded the Step 18 /document-release dispatch out of
-      // sight — the skeleton never named it and the handoff "got lost" (#2666
-      // follow-up). Three NON-OVERLAPPING anchors pin the restored visibility,
-      // one per touchpoint (no anchor is a substring of another, so each is
-      // independently enforced — a subsumed anchor adds zero enforcement):
-      //   gerund form  → manifest trigger (renders 2x: section index + STOP)
-      //   imperative   → Step 17 handoff line
-      //   3rd person   → hoisted doc-sync invariant
-      // Matching is case-sensitive String.includes — "dispatching the" does NOT
-      // contain "dispatch the" — so update anchors in lockstep with any
-      // touchpoint rewording.
       mustStayInSkeleton: [
         'v$NEW_VERSION',
         'gstack-pr-title-rewrite',
         'dispatching the /document-release subagent to sync docs',
         'dispatch the /document-release subagent to sync docs',
         'dispatches the /document-release subagent',
+        '## Step 2: Distribution Pipeline Check',
+        '### Step 15.0: WIP Commit Squash',
+        'Credential pre-push guard (#1946) — detect before the push',
+        '## Step 21: Plan-tune discoverability nudge',
       ],
-      // ...while the full create/update procedure stays carved into pr-body.md
-      // (out of the skeleton, present in the union). Asserts BOTH PR paths
-      // survive: the create path and the idempotent update path. The Step 18
-      // dispatch imperative stays carved too — pasting that literal into the
-      // skeleton (correctly) fails this guard; the skeleton speaks of "the
-      // /document-release subagent", never the carved imperative.
       mustMoveToSection: [
         'gh pr create --base',
         'gh pr edit --title',
         'Dispatch /document-release as a subagent',
+        "This PR adds a new binary/tool but there's no CI/CD pipeline",
+        'Non-destructive squash strategy',
+        'gstack can install a per-repo git pre-push hook',
+        'gstack can learn from your AskUserQuestion answers',
       ],
-      // ship is operational (multi-STOP, not a plan review); no single post-STOP gate.
       gateAfterStop: undefined,
     },
     behavioral: 'external',
     externalTest: 'test/skill-e2e-ship-section-loading.test.ts',
-    maxSkeletonBytes: 77_650, // + v1.78 AUQ spawned-trigger objectivity (explicit declaration + interactive fence); measured 77_236
-    minUnionBytes: 181_000, // token-reduction Phases 1-2 (v1.69.x branch); measured union 201,464
+    maxSkeletonBytes: 72_500,
+    minUnionBytes: 181_000,
     mustContain: ['VERSION', 'CHANGELOG', 'review', 'merge', 'PR'],
-    // v1.58.5.0: pre-push-guard install (#2077) stacks on the shared first-run-guidance preamble.
-    // Fork port wave 2: multi-ecosystem test-detection evidence (Django/JVM
-    // markers, test-file census — e3259078 port) + the #1079 gh pr edit REST
-    // fallback grew the union to 1.090x; the third-party web-actions
-    // contract (consent-gated browser drive for API-key registration etc.)
-    // adds ~2.3KB inline judgment, measured 1.103x. The Apple release
-    // adapter (14.8KB carved section, 21 live releases of judgment — the
-    // wave's headline capability) grows the union to 1.195x. Deliberate:
-    // the section is on-demand (loads only for Apple store targets), so
-    // per-invocation cost for non-iOS ships is one manifest line.
-    maxSizeRatio: 1.22,
+    maxSizeRatio: 1.24,
   },
   'plan-ceo-review': {
     skill: 'plan-ceo-review',
